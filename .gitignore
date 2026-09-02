@@ -2,4 +2,4 @@
 __pycache__/
 .ipynb_checkpoints/
 *.nc
-*.grib2
+*.grib2 #e
