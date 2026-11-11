@@ -1,35 +1,43 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.ticker as mticker
+
 def plotskewT(temp,pres):
-    import matplotlib.pyplot as plt
+    temp = np.asarray(temp)
+    pres = np.asarray(pres)
+
     g = 9.81 # m/s^2
     Cp = 1004 # J/kgK 
     Rd = 287 # J/kgK
     Lv = 2.5e6 # J/kg
     Rv = 461.5 # J/kgK
 
-    fig, ax = plt.subplots(figsize=(xsize, ysize))
+    fig, ax = plt.subplots(figsize=(8, 8))
 
 
     ax.semilogy() #log based axis for pressure
-    ax.set_ylim(1000, 100)
+    ax.set_ylim(1000, 50)
     ax.yaxis.set_minor_formatter(mticker.ScalarFormatter())
     ax.yaxis.set_major_formatter(mticker.ScalarFormatter()) #getting both out of scientific notation
     ax.set_ylabel('Pressure (hPa)')
 
-    ax.set_xlim(-40, 50)
+    ax.set_xlim(10, 100)
     ax.set_xlabel('Temperature (°C)')
 
 
 
 
-    for i in range(-110, 50, 10): # every 10 degc
-        ax.plot(skewT(np.array([i, i]), np.array([1000, 100])), np.array([1000, 100]), color='black', linewidth=0.5, linestyle='--')
+    for i in range(-110, 100, 10): # every 10 degc
+        ax.plot(skewT(np.array([i, i]), np.array([1000, 50])), np.array([1000, 50]), color='black', linewidth=0.5, linestyle='--')
 
 
+    
 
+    for thetaq in range(-30, 280, 20):
+        ax.plot(skewT(isentrope(thetaq), np.arange(1000, 50, -1)), np.arange(1000, 50, -1), color='red', linewidth=0.25, label='Dry Adiabats' if thetaq == -30 else None) # only label the first one to avoid clutter
 
-    for thetaq in range(-30, 240, 20):
-        ax.plot(skewT(isentrope(thetaq), np.arange(1000, 100, -1)), np.arange(1000, 100, -1), color='red', linewidth=0.25, label='Dry Adiabats' if thetaq == -30 else None) # only label the first one to avoid clutter
-
+    ax.plot(skewT(temp, pres), pres, color='blue', linewidth=1.5, label='Temperature profile')
+    ax.legend()
 
     return fig, ax
 
@@ -43,8 +51,8 @@ def isentrope(theta0):
 
     theta = theta0 + 273.15 # converting to kelvin
     p0 = 1000
-    pf = 100
-    oneisentrope = np.arange(p0, pf, -1) # basically making for one single isentrope, the pressure values from 1000 to 100 hPa and finding 
+    pf = 50
+    oneisentrope = np.arange(p0, pf, -1) # basically making for one single isentrope, the pressure values from 1000 to 50 hPa and finding 
     # temp given pressure and potential temp 
 
     return theta * (oneisentrope/p0)**(Rd/Cp) - 273.15 # basically solving for temperature from theta
@@ -61,7 +69,7 @@ def moist(T): # for an initial temperature
 
     finaltemps = []
 
-    while pressure > 100:
+    while pressure > 50:
 
         es = 6.112 * np.exp(17.67 * (Tk - 273.15)/(Tk - 29.65)) # saturation vapor pressure in hPa
 
