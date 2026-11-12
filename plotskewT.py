@@ -21,7 +21,7 @@ def plotskewT(temp,pres):
     ax.yaxis.set_major_formatter(mticker.ScalarFormatter()) #getting both out of scientific notation
     ax.set_ylabel('Pressure (hPa)')
 
-    ax.set_xlim(10, 100)
+    ax.set_xlim(-50, 100)
     ax.set_xlabel('Temperature (°C)')
 
 
@@ -31,7 +31,8 @@ def plotskewT(temp,pres):
         ax.plot(skewT(np.array([i, i]), np.array([1000, 50])), np.array([1000, 50]), color='black', linewidth=0.5, linestyle='--')
 
 
-    
+    for T0 in range(0, 100, 8):
+        ax.plot(skewT(moist(T0), np.arange(1000, 50, -1)), np.arange(1000, 50, -1), color='blue', linewidth=0.25) # only label the first one to avoid clutter
 
     for thetaq in range(-30, 280, 20):
         ax.plot(skewT(isentrope(thetaq), np.arange(1000, 50, -1)), np.arange(1000, 50, -1), color='red', linewidth=0.25, label='Dry Adiabats' if thetaq == -30 else None) # only label the first one to avoid clutter
